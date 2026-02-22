@@ -48,6 +48,7 @@ runs:
         oauth-client-id: ${{ inputs.oauth-client-id }}
         oauth-secret: ${{ inputs.oauth-secret }}
         authkey: ${{ inputs.authkey }}
+        version: latest
         tags: ${{ inputs.tags }}
         args: --ssh ${{ inputs.tailscale-args }}
 
