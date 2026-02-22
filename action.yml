@@ -1,0 +1,58 @@
+name: 'Debug via Tailscale'
+description: 'SSH into a GitHub Actions runner via Tailscale for interactive debugging'
+branding:
+  icon: 'terminal'
+  color: 'blue'
+
+inputs:
+  oauth-client-id:
+    description: 'Tailscale OAuth client ID'
+    required: false
+  oauth-secret:
+    description: 'Tailscale OAuth client secret'
+    required: false
+  authkey:
+    description: 'Tailscale auth key'
+    required: false
+  tags:
+    description: 'Comma-separated Tailscale ACL tags for the ephemeral node'
+    required: true
+    default: 'tag:github-actions'
+  timeout:
+    description: 'Maximum session duration in seconds'
+    required: false
+    default: '21500'
+  tailscale-args:
+    description: 'Additional arguments to pass to tailscale up'
+    required: false
+    default: ''
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Validate inputs
+      shell: bash
+      run: |
+        if [ -z "${{ inputs.oauth-client-id }}" ] && [ -z "${{ inputs.authkey }}" ]; then
+          echo "::error::Either oauth-client-id (with oauth-secret) or authkey must be provided"
+          exit 1
+        fi
+        if [ -n "${{ inputs.oauth-client-id }}" ] && [ -z "${{ inputs.oauth-secret }}" ]; then
+          echo "::error::oauth-client-id requires oauth-secret"
+          exit 1
+        fi
+
+    - name: Connect to Tailscale
+      uses: tailscale/github-action@v4
+      with:
+        oauth-client-id: ${{ inputs.oauth-client-id }}
+        oauth-secret: ${{ inputs.oauth-secret }}
+        authkey: ${{ inputs.authkey }}
+        tags: ${{ inputs.tags }}
+        args: --ssh ${{ inputs.tailscale-args }}
+
+    - name: Wait for SSH session
+      shell: bash
+      run: ${{ github.action_path }}/scripts/wait-for-session.sh
+      env:
+        SESSION_TIMEOUT: ${{ inputs.timeout }}
