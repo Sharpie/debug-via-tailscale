@@ -3,6 +3,7 @@ set -euo pipefail
 
 TS_IP=$(tailscale ip -4)
 TS_HOSTNAME=$(tailscale status --self --json | jq -r '.Self.DNSName' | sed 's/\.$//')
+TS_USER=$(whoami)
 
 CONTINUE_FILE="${HOME}/continue"
 TIME_LEFT=${SESSION_TIMEOUT:-21500}
@@ -12,6 +13,7 @@ echo "========================================"
 echo " Debug session started"
 echo " Tailscale IP: ${TS_IP}"
 echo " Hostname:     ${TS_HOSTNAME}"
+echo " User:         ${TS_USER}"
 echo "========================================"
 echo ""
 
@@ -19,8 +21,8 @@ while [ ! -e "$CONTINUE_FILE" ] && [ "$TIME_LEFT" -gt 0 ]; do
   echo "########################################"
   echo "#"
   echo "# Connect via:"
-  echo "#   ssh ${TS_HOSTNAME}"
-  echo "#   ssh ${TS_IP}"
+  echo "#   ssh ${TS_USER}@${TS_HOSTNAME}"
+  echo "#   ssh ${TS_USER}@${TS_IP}"
   echo "#"
   echo "# To end this session early, run:"
   echo "#   touch ~/continue"
