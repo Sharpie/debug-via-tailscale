@@ -54,7 +54,7 @@ Then SSH from any machine on your tailnet using the connection info printed in t
 | `oauth-secret` | no* | — | Tailscale OAuth client secret |
 | `authkey` | no* | — | Tailscale auth key |
 | `tags` | yes | `tag:github-actions` | ACL tags for the ephemeral node |
-| `timeout` | no | `21500` | Max session duration in seconds (~6 hours) |
+| `timeout` | no | `3600` | Max session duration in seconds (1 hour) |
 | `tailscale-args` | no | — | Extra arguments for `tailscale up` |
 
 \*One auth method required: `oauth-client-id` + `oauth-secret`, or `authkey`.
@@ -127,7 +127,6 @@ jobs:
         with:
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
-          timeout: '3600'
 ```
 
 ## Supported Runners

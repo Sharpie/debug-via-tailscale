@@ -21,7 +21,7 @@ inputs:
   timeout:
     description: 'Maximum session duration in seconds'
     required: false
-    default: '21500'
+    default: '3600'
   tailscale-args:
     description: 'Additional arguments to pass to tailscale up'
     required: false
