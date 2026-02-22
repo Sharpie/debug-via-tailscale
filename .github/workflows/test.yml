@@ -1,9 +1,16 @@
-name: Test debug-via-tailscale
-on: workflow_dispatch
+name: Manual testing of debug-via-tailscale
+
+on:
+  workflow_dispatch:
+    inputs:
+      runner:
+        description: 'Workflow runner to use'
+        required: true
+        default: 'ubuntu-latest'
 
 jobs:
   debug:
-    runs-on: ubuntu-latest
+    runs-on: ${{ github.event.inputs.runner }}
     steps:
       - uses: actions/checkout@v6
 
